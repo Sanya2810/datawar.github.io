@@ -28,7 +28,7 @@
         .append("g")
         .attr("transform",
               "translate(" + margin.left + "," + margin.top + ")");
-    
+  
 
     // Initialize the X axis
     const x = d3.scaleBand()
@@ -57,9 +57,10 @@
       y.domain([0, d3.max(data, function(d) { return +d[selectedVar] }) ]);
       yAxis.transition().duration(1000).call(d3.axisLeft(y));
     
+
     
       // variable u: map data to existing circle
-      const j = svg.selectAll(".myLine")
+          const j = svg.selectAll(".myLine")
        .data(data)
         // update lines
         j
@@ -75,7 +76,38 @@
         .attr("y2", function(d) { return y(d[selectedVar]); })
         .attr("stroke", "black")
 
-      
+      const tooltip = d3.select("#my_dataviz")
+            .append("circle")
+            .style("opacity", 0)
+            .attr("class", "tooltip")
+            .style("background-color", "white")
+            .style("border", "solid")
+            .style("border-width", "2px")
+            .style("border-radius", "5px")
+            .style("padding", "5px");
+
+    
+      const mouseover = function(d) {
+          tooltip
+          .transition()
+          .duration(1000)
+          .style("opacity", 0.8)
+          }
+
+      const mousemove = function(d) {
+          tooltip
+          .html( d.Country + ", "+ d[selectedVar])
+          .style("left", (d3.mouse(this)[0])+ "px") // It is important to put the +90: other wise the tooltip is exactly where the point is an it creates a weird effect
+          .style("top", (d3.mouse(this)[1])+ "px")
+        }
+
+    // A function that change this tooltip when the leaves a point: just need to set opacity to 0 again
+      const mouseleave = function(d) {
+        tooltip
+        .transition()
+        .duration(1000)
+        .style("opacity", 0)
+        }
       // variable u: map data to existing circle
       const u = svg.selectAll("circle")
         .data(data)
@@ -84,17 +116,18 @@
         .enter()
         .append("circle")
         .merge(u)
-        .transition()
-        .duration(1000)
-        .attr("r", 5)
-        .attr("fill", "#7b6888")
-        .attr("stroke","black")
-        .attr("cx", function(d) { return x(d.Country); })
-        .attr("cy", function(d) { return y(d[selectedVar]); });
-       
-      })
-
-}
+          .attr("r", 5)
+          .attr("fill", "#7b6888")
+          .attr("stroke","black")
+          .attr("cx", function(d) { return x(d.Country); })
+          .attr("cy", function(d) { return y(d[selectedVar]); })
+          .style("cursor", "pointer")
+        .on("mouseover", mouseover )
+        .on("mousemove", mousemove )
+        .on("mouseleave", mouseleave );
+  
+          })
+  }
 
 
 // Initialize plot
