@@ -1,4 +1,6 @@
 .graph-svg-component{
+    width:900px;
+    height:600px;
     border: solid #ddd 1px;
     background-color: rgb(245, 239, 239);
     align-items: center;
